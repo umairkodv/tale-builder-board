@@ -9,38 +9,125 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as LoginRouteImport } from './routes/login'
+import { Route as AppRouteImport } from './routes/_app'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as AppDashboardRouteImport } from './routes/_app.dashboard'
+import { Route as AppApiKeysRouteImport } from './routes/_app.api-keys'
+import { Route as AppStoriesIndexRouteImport } from './routes/_app.stories.index'
+import { Route as AppStoriesStoryIdRouteImport } from './routes/_app.stories.$storyId'
 
+const LoginRoute = LoginRouteImport.update({
+  id: '/login',
+  path: '/login',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AppRoute = AppRouteImport.update({
+  id: '/_app',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AppDashboardRoute = AppDashboardRouteImport.update({
+  id: '/dashboard',
+  path: '/dashboard',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppApiKeysRoute = AppApiKeysRouteImport.update({
+  id: '/api-keys',
+  path: '/api-keys',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppStoriesIndexRoute = AppStoriesIndexRouteImport.update({
+  id: '/stories/',
+  path: '/stories/',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppStoriesStoryIdRoute = AppStoriesStoryIdRouteImport.update({
+  id: '/stories/$storyId',
+  path: '/stories/$storyId',
+  getParentRoute: () => AppRoute,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/login': typeof LoginRoute
+  '/api-keys': typeof AppApiKeysRoute
+  '/dashboard': typeof AppDashboardRoute
+  '/stories/$storyId': typeof AppStoriesStoryIdRoute
+  '/stories/': typeof AppStoriesIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/login': typeof LoginRoute
+  '/api-keys': typeof AppApiKeysRoute
+  '/dashboard': typeof AppDashboardRoute
+  '/stories/$storyId': typeof AppStoriesStoryIdRoute
+  '/stories': typeof AppStoriesIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/_app': typeof AppRouteWithChildren
+  '/login': typeof LoginRoute
+  '/_app/api-keys': typeof AppApiKeysRoute
+  '/_app/dashboard': typeof AppDashboardRoute
+  '/_app/stories/$storyId': typeof AppStoriesStoryIdRoute
+  '/_app/stories/': typeof AppStoriesIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/'
+  fullPaths:
+    | '/'
+    | '/login'
+    | '/api-keys'
+    | '/dashboard'
+    | '/stories/$storyId'
+    | '/stories/'
   fileRoutesByTo: FileRoutesByTo
-  to: '/'
-  id: '__root__' | '/'
+  to:
+    | '/'
+    | '/login'
+    | '/api-keys'
+    | '/dashboard'
+    | '/stories/$storyId'
+    | '/stories'
+  id:
+    | '__root__'
+    | '/'
+    | '/_app'
+    | '/login'
+    | '/_app/api-keys'
+    | '/_app/dashboard'
+    | '/_app/stories/$storyId'
+    | '/_app/stories/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  AppRoute: typeof AppRouteWithChildren
+  LoginRoute: typeof LoginRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/login': {
+      id: '/login'
+      path: '/login'
+      fullPath: '/login'
+      preLoaderRoute: typeof LoginRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/_app': {
+      id: '/_app'
+      path: ''
+      fullPath: '/'
+      preLoaderRoute: typeof AppRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/': {
       id: '/'
       path: '/'
@@ -48,11 +135,57 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/_app/dashboard': {
+      id: '/_app/dashboard'
+      path: '/dashboard'
+      fullPath: '/dashboard'
+      preLoaderRoute: typeof AppDashboardRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/_app/api-keys': {
+      id: '/_app/api-keys'
+      path: '/api-keys'
+      fullPath: '/api-keys'
+      preLoaderRoute: typeof AppApiKeysRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/_app/stories/': {
+      id: '/_app/stories/'
+      path: '/stories'
+      fullPath: '/stories/'
+      preLoaderRoute: typeof AppStoriesIndexRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/_app/stories/$storyId': {
+      id: '/_app/stories/$storyId'
+      path: '/stories/$storyId'
+      fullPath: '/stories/$storyId'
+      preLoaderRoute: typeof AppStoriesStoryIdRouteImport
+      parentRoute: typeof AppRoute
+    }
   }
 }
 
+interface AppRouteChildren {
+  AppApiKeysRoute: typeof AppApiKeysRoute
+  AppDashboardRoute: typeof AppDashboardRoute
+  AppStoriesStoryIdRoute: typeof AppStoriesStoryIdRoute
+  AppStoriesIndexRoute: typeof AppStoriesIndexRoute
+}
+
+const AppRouteChildren: AppRouteChildren = {
+  AppApiKeysRoute: AppApiKeysRoute,
+  AppDashboardRoute: AppDashboardRoute,
+  AppStoriesStoryIdRoute: AppStoriesStoryIdRoute,
+  AppStoriesIndexRoute: AppStoriesIndexRoute,
+}
+
+const AppRouteWithChildren = AppRoute._addFileChildren(AppRouteChildren)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  AppRoute: AppRouteWithChildren,
+  LoginRoute: LoginRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
