@@ -66,7 +66,7 @@ function StoriesList() {
           <p className="text-muted-foreground text-sm mt-1">Create, edit and publish your story widgets.</p>
         </div>
         <Button asChild>
-          <Link to="/stories/new"><Plus className="h-4 w-4 mr-2" />New story</Link>
+          <Link to="/stories/$storyId" params={{ storyId: "new" }}><Plus className="h-4 w-4 mr-2" />New story</Link>
         </Button>
       </div>
 
@@ -85,7 +85,7 @@ function StoriesList() {
             <BookOpen className="h-10 w-10 mx-auto mb-3 text-muted-foreground opacity-40" />
             <p className="font-medium">No stories yet</p>
             <p className="text-sm text-muted-foreground mt-1 mb-4">Get started by creating your first story.</p>
-            <Button asChild><Link to="/stories/new"><Plus className="h-4 w-4 mr-2" />New story</Link></Button>
+            <Button asChild><Link to="/stories/$storyId" params={{ storyId: "new" }}><Plus className="h-4 w-4 mr-2" />New story</Link></Button>
           </div>
         ) : (
           <Table>

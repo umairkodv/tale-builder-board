@@ -46,7 +46,7 @@ function Overview() {
           <p className="text-muted-foreground text-sm mt-1">Welcome back. Here's what's happening with your stories.</p>
         </div>
         <Button asChild>
-          <Link to="/stories/new"><Plus className="h-4 w-4 mr-2" />New story</Link>
+          <Link to="/stories/$storyId" params={{ storyId: "new" }}><Plus className="h-4 w-4 mr-2" />New story</Link>
         </Button>
       </div>
 
